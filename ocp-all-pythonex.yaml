@@ -39,7 +39,7 @@ metadata:
     app: pythonex
   name: pythonex
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     app: pythonex
@@ -56,9 +56,6 @@ spec:
       - image: pythonex:latest
         imagePullPolicy: Always
         name: pythonex
-        command:
-        - perl
-        - app.py
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -95,7 +92,7 @@ spec:
       app: pythonex
       deploymentconfig: pythonex
       sessionAffinity: None
-      type: ClusterIP
+    type: LoadBalancer 
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
