@@ -1,0 +1,22 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: simple-container-build
+  labels:
+    name: simple-container-build
+spec:
+  triggers:
+    - type: ConfigChange
+  source:
+    contextDir: "simple-container-build/"
+    type: Git
+    git:
+      uri: 'https://github.com/openshift-examples/container-build.git'
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: "Containerfile"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'simple-container-build:latest'

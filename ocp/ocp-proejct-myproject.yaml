@@ -1,0 +1,9 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: myproject2
+spec:
+  finalizers:
+    - kubernetes
+
+# It cannot be created by developer but it can be created by admin

@@ -1,0 +1,35 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: hello-openshift
+spec:
+  replicas: 2
+  selector:
+    name: hello-openshift
+  template: 
+    metadata:
+      labels:
+        app: hello-openshift
+    spec:
+      containers:
+      - name: hello-openshift
+        image: openshift/hello-openshift:latest
+        ports:
+        - containerPort: 80
+  triggers:
+  # A ConfigChange trigger causes a new Deployment to be created any time the ReplicationController template changes.
+  - type: ConfigChange 
+  # An ImageChange trigger causes a new Deployment to be created each time a new version of the backing image is available in the named imagestream.
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - hello-openshift
+      from:
+        kind: ImageStreamTag
+        name: hello-openshift:latest
+    type: ImageChange  
+  strategy:
+    # The default Rolling strategy makes a downtime-free transition between Deployments.
+    type: Rolling   
+
+# fail : why?
