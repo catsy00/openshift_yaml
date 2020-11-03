@@ -1,0 +1,21 @@
+# fail
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-sidecar 
+  labels:
+    app: httpd-sidecar
+spec:
+  containers:
+  - name: httpd-container
+    image: httpd:latest
+    ports:
+    - containerPort: 80
+  - name: sidecar
+    image: curlimages/curl
+    command: ["/bin/sh"]
+    args: ["-c","echo Hello from the sidecar container; sleep 300"]
+
+# oc exec -it nginx -c sidecar -- /bin/sh
+# netstat -ln
