@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+    labels:
+    app: gitlab-ruuner
+    name: gitlab-ruuner
+spec:
+    ports:
+    - name: 80-tcp
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: gitlab-ruuner
+      deploymentconfig: gitlab-ruuner
+    type: LoadBalancer 
