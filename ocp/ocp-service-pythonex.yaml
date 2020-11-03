@@ -1,17 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-    labels:
-    app: pythonex
-    name: pythonex
+  app: pythonex
+  name: pythonex
 spec:
-    ports:
-    - name: 8080-tcp
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: pythonex
-      deploymentconfig: pythonex
-      sessionAffinity: None
-    type: LoadBalancer 
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pythonex
+    deploymentconfig: pythonex
+  type: LoadBalancer 
