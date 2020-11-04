@@ -12,7 +12,7 @@ spec:
         deploymentconfig: busybox
     spec:
       containers:
-      - image: rhel7/rhel-tools
+      - image: rhel7
         name: busybox
         command: [ "/bin/sh", "-c", "while true ; do date; sleep 1; done;" ]
   triggers:
