@@ -2,33 +2,32 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: pythonex
+  name: builder-test
 ---
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   labels:
-    build: pythonex
-  name: pythonex
+    build: builder-test
+  name: builder-test
 spec:
   failedBuildsHistoryLimit: 5
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: pythonex:latest
+      name: builder-test:latest
   postCommit: {}
   resources: {}
   runPolicy: Serial
   source:
-    type: Git
-    git:
-      uri: 'https://github.com/catsy00/pythonex.git'
+    dockerfile: "FROM rhscl/s2i-base-rhel7:latest \nENTRYPOINT bash\n"
+    type: Dockerfile
   strategy:
     dockerStrategy:
       from:
         kind: DockerImage
-        name: ubuntu:16.04
+        name: registry.redhat.io/rhscl/s2i-base-rhel7:latest
     type: Docker
   successfulBuildsHistoryLimit: 5
 ---
@@ -36,26 +35,30 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    app: pythonex
-  name: pythonex
+    app: builder-test
+  name: builder-test
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
-    app: pythonex
-    deploymentconfig: pythonex
+    app: builder-test
+    deploymentconfig: builder-test
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: pythonex
-        deploymentconfig: pythonex
+        app: builder-test
+        deploymentconfig: builder-test
     spec:
       containers:
-      - image: pythonex:latest
+      - image: builder-test:latest
         imagePullPolicy: Always
-        name: pythonex
+        name: builder-test
+        command:
+        - /bin/sh
+        - -c
+        - while true ; do date; sleep 1; done;
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -70,37 +73,11 @@ spec:
   - imageChangeParams:
       automatic: true
       containerNames:
-      - pythonex
+      - builder-test
       from:
         kind: ImageStreamTag
-        name: pythonex:latest
+        name: builder-test:latest
+        namespace: anyuid
     type: ImageChange
----
-apiVersion: v1
-kind: Service
-metadata:
-    app: pythonex
-    name: pythonex
-spec:
-    ports:
-    - name: 8080-tcp
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: pythonex
-      deploymentconfig: pythonex
-    type: ClusterIP 
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  app: pythonex
-  name: pythonex
-spec:
-  port:
-    targetPort: 8080-tcp
-  to:
-    kind: Service
-    name: pythonex
-    weight: 100
+
+# Deployment config does not have minimum availability.
