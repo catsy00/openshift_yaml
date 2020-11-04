@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: git-mig5zx
+  namespace: myproject
+spec:
+  params:
+    - name: url
+      value: 'https://github.com/catsy00/pythonex.git'
+  type: git

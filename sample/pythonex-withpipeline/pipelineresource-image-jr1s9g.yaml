@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: image-jr1s9g
+  namespace: myproject
+spec:
+  params:
+    - name: url
+      value: 'image-registry.openshift-image-registry.svc:5000/myproject/pythonex-git'
+  type: image
