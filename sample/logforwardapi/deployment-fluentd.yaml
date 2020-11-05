@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - name: fluentd
+          image: docker.io/fluent/fluentd:v1.3-debian-1
+          ports:
+            - containerPort: 24224
+          volumeMounts:
+          - mountPath: /fluentd/log
+            name: fluentd-log
+      volumes:
+      - name: fluentd-log
+        persistentVolumeClaim:
+          claimName: fluentd-log
