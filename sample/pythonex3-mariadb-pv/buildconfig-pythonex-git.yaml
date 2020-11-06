@@ -1,0 +1,51 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: pythonex-git
+  namespace: tj-project
+  labels:
+    app: pythonex-git
+    app.kubernetes.io/component: pythonex-git
+    app.kubernetes.io/instance: pythonex-git
+    app.kubernetes.io/name: python
+    app.kubernetes.io/part-of: pythonex-git-app
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: 3.8-ubi7
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'pythonex-git:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'python:3.8-ubi7'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/catsy00/pythonex3.git'
+    contextDir: /
+  triggers:
+    - type: Generic
+      generic:
+        secretReference:
+          name: pythonex-git-generic-webhook-secret
+    - type: GitHub
+      github:
+        secretReference:
+          name: pythonex-git-github-webhook-secret
+    - type: ImageChange
+      imageChange:
+        lastTriggeredImageID: >-
+          image-registry.openshift-image-registry.svc:5000/openshift/python@sha256:cd1501e20fd764b07f2b141c2a8771a4b2297564f969fd65046fc05e86e40955
+    - type: ConfigChange
+  runPolicy: Serial
+
